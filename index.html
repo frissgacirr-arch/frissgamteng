@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRISS STORE - Top Up Game</title>
+<style>
+body {margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#0f0f0f,#1a1a2e,#16213e);color:white;}
+header{text-align:center;padding:30px 20px;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.1);position:relative;}
+header img{width:90px;border-radius:50%;margin-bottom:10px;}
+header h1{margin:0;font-size:2em;color:#00d4ff;text-shadow:0 0 10px rgba(0,212,255,0.6);}
+header p{margin:5px 0 0;color:#aaa;}
+.login-btn{position:absolute;right:20px;top:20px;background:#00d4ff;color:black;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:bold;border:none;}
+.container{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:30px;max-width:1100px;margin:auto;}
+.card{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);border-radius:15px;padding:20px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.5);transition:0.3s;cursor:pointer;}
+.card:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(0,0,0,0.7);}
+.card img{width:120px;margin-bottom:15px;}
+.card h2{margin:0;color:#00d4ff;}
+#topupSection{display:none;max-width:1000px;margin:20px auto;padding:20px;}
+#topupSection h2{text-align:center;margin-bottom:20px;color:#00d4ff;text-shadow:0 0 5px rgba(0,212,255,0.5);}
+.diamond-container{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.diamond-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);border-radius:15px;padding:20px;text-align:center;box-shadow:0 6px 15px rgba(0,0,0,0.5);}
+.diamond-card h3{margin:10px 0;}
+.price{font-size:18px;font-weight:bold;color:#ffcc00;}
+.btn{background:linear-gradient(135deg,#00d4ff,#0072ff);color:white;padding:10px 15px;border-radius:10px;text-decoration:none;display:inline-block;margin-top:10px;font-weight:bold;cursor:pointer;transition:0.3s;border:none;}
+.btn:hover{transform:scale(1.05);}
+#checkout{max-width:500px;margin:30px auto;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);padding:25px;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,0.6);display:none;}
+#checkout h2{text-align:center;margin-top:0;color:#ffcc00;}
+#checkout p.summary{background:rgba(0,212,255,0.1);padding:10px;border-radius:10px;margin-bottom:15px;}
+label{display:block;margin:10px 0 5px;}
+input,select{width:100%;padding:12px;border:none;border-radius:10px;margin-bottom:15px;background:rgba(255,255,255,0.1);color:white;}
+input:focus,select:focus{outline:2px solid #00d4ff;}
+footer{text-align:center;padding:20px;background:rgba(0,0,0,0.7);margin-top:30px;font-size:14px;color:#aaa;}
+.back-btn{margin:15px auto;display:block;text-align:center;}
+#adminLogin,#adminPanel{display:none;max-width:400px;margin:30px auto;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);padding:25px;border-radius:15px;text-align:center;}
+#adminPanel input{width:80%;margin-bottom:10px;}
+.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.9);padding:20px 30px;border-radius:10px;box-shadow:0 0 15px #00d4ff;color:#00ff99;font-weight:bold;font-size:16px;display:none;z-index:999;}
+</style>
+</head>
+<body>
+<header>
+<img src="https://files.catbox.moe/halh69.png" alt="FRISS Logo">
+<h1>FRISS STORE</h1>
+<p>Top Up Free Fire & Mobile Legends Termurah 🔥</p>
+<button class="login-btn" onclick="showLogin()">Admin Login</button>
+</header>
+
+<div class="container" id="gameSection">
+<div class="card" onclick="showTopup('Free Fire')">
+<img src="https://files.catbox.moe/mvds0v.jpg" alt="Free Fire">
+<h2>Free Fire</h2>
+</div>
+<div class="card" onclick="showTopup('Mobile Legends')">
+<img src="https://files.catbox.moe/ildad1.jpg" alt="Mobile Legends">
+<h2>Mobile Legends</h2>
+</div>
+</div>
+
+<div id="topupSection">
+<h2 id="gameTitle"></h2>
+<div class="diamond-container" id="diamondList"></div>
+<button class="btn back-btn" onclick="backToDashboard()">⬅ Kembali ke Dashboard</button>
+</div>
+
+<div id="checkout">
+<h2>Form Checkout</h2>
+<p id="paketInfo"></p>
+<p class="summary" id="summaryInfo"></p>
+<label for="idPlayer">ID Player</label>
+<input type="text" id="idPlayer" placeholder="Masukkan ID Player" required>
+<div id="serverInput" style="display:none;">
+<label for="server">Server (khusus ML)</label>
+<input type="text" id="server" placeholder="Contoh: 1234">
+</div>
+<label for="promo">Kode Promo</label>
+<input type="text" id="promo" placeholder="Masukkan kode promo (opsional)">
+<label for="payment">Metode Pembayaran</label>
+<select id="payment" required>
+<option value="">-- Pilih Pembayaran --</option>
+<option value="Dana">Dana</option>
+<option value="OVO">OVO</option>
+<option value="Gopay">Gopay</option>
+<option value="QRIS">QRIS</option>
+<option value="Bank Transfer">Bank BCA</option>
+</select>
+<button class="btn" onclick="sendOrder()">Kirim ke WhatsApp</button>
+</div>
+
+<div id="adminLogin">
+<h2>Login Admin</h2>
+<input type="text" id="adminUser" placeholder="Username">
+<input type="password" id="adminPass" placeholder="Password">
+<button class="btn" onclick="loginAdmin()">Login</button>
+</div>
+
+<div id="adminPanel">
+<h2>Admin Panel</h2>
+<p>Edit harga paket:</p>
+<div id="editHarga"></div>
+<hr>
+<h3>Tambah Paket Baru</h3>
+<label>Game</label>
+<select id="newGame">
+<option value="Free Fire">Free Fire</option>
+<option value="Mobile Legends">Mobile Legends</option>
+</select>
+<label>Nama Paket (Diamond)</label>
+<input type="text" id="newDiamond" placeholder="Contoh: 500 Diamond">
+<label>Harga</label>
+<input type="number" id="newHarga" placeholder="Contoh: 75000">
+<button class="btn" onclick="tambahPaket()">Tambah Paket</button>
+<hr>
+<h3>Urutkan Paket</h3>
+<label>Pilih Game</label>
+<select id="sortGame">
+<option value="Free Fire">Free Fire</option>
+<option value="Mobile Legends">Mobile Legends</option>
+</select>
+<label>Urutkan Berdasarkan</label>
+<select id="sortOrder">
+<option value="asc">Harga Terendah → Tertinggi</option>
+<option value="desc">Harga Tertinggi → Terendah</option>
+</select>
+<button class="btn" onclick="urutkanPaket()">Urutkan</button>
+<hr>
+<button class="btn" onclick="resetHarga()">Reset Harga Default</button>
+<button class="btn" onclick="logoutAdmin()">Logout</button>
+</div>
+
+<div class="modal" id="modal">Sukses!</div>
+
+<footer>© 2025 FRISS STORE | Contact: 088291160287</footer>
+
+<script>
+let selectedGame="",selectedDiamond="",selectedHarga="",isAdmin=false;
+let paketDefault={"Free Fire":[{diamond:"70 Diamond",harga:10000},{diamond:"140 Diamond",harga:20000},{diamond:"355 Diamond",harga:50000},{diamond:"720 Diamond",harga:100000}],"Mobile Legends":[{diamond:"86 Diamond",harga:20000},{diamond:"172 Diamond",harga:40000},{diamond:"257 Diamond",harga:60000},{diamond:"344 Diamond",harga:80000}]};
+let paket=JSON.parse(localStorage.getItem('paket')) || JSON.parse(JSON.stringify(paketDefault));
+const promoCodes={"FRISS10":0.10,"FRISS20":0.20};
+
+function showTopup(game){selectedGame=game;document.getElementById("gameSection").style.display="none";document.getElementById("topupSection").style.display="block";document.getElementById("gameTitle").innerText="Top Up "+game;renderDiamondList(game);}
+function renderDiamondList(game){let list=document.getElementById("diamondList");list.innerHTML="";paket[game].forEach((p,i)=>{list.innerHTML+=`<div class="diamond-card"><h3>${p.diamond}</h3><p class="price">Rp${p.harga.toLocaleString()}</p><button class="btn" onclick="openCheckout('${game}','${p.diamond}',${p.harga})">Order</button></div>`;});}
+function openCheckout(game,diamond,harga){selectedGame=game;selectedDiamond=diamond;selectedHarga=harga;document.getElementById("paketInfo").innerText=`Game: ${game} | Paket: ${diamond} - Rp${harga.toLocaleString()}`;document.getElementById("serverInput").style.display=(game==="Mobile Legends")?"block":"none";updateSummary();document.getElementById("checkout").style.display="block";window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});}
+function updateSummary(){let promo=document.getElementById("promo").value.trim();let finalHarga=selectedHarga;if(promo && promoCodes[promo]) finalHarga-=(finalHarga*promoCodes[promo]);document.getElementById("summaryInfo").innerText=`Total Harga: Rp${finalHarga.toLocaleString()}${promo&&promoCodes[promo]?' (Diskon '+(promoCodes[promo]*100)+'%)':''}`;}
+document.getElementById("promo").addEventListener("input",updateSummary);
+
+function sendOrder(){let id=document.getElementById("idPlayer").value;let server=document.getElementById("server").value;let payment=document.getElementById("payment").value;let promo=document.getElementById("promo").value.trim();if(!id||!payment){alert("Harap isi ID Player dan pilih metode pembayaran!");return;}let finalHarga=selectedHarga;if(promo && promoCodes[promo]) finalHarga-=(finalHarga*promoCodes[promo]);let phone="6288291160287";let message=`Halo, saya mau order:\n\nGame: ${selectedGame}\nID: ${id}${server?" ("+server+")":""}\nPaket: ${selectedDiamond} - Rp${finalHarga.toLocaleString()}\nPembayaran: ${payment}\n\nMohon diproses 🙏`;window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`,"_blank");}
+
+function backToDashboard(){document.getElementById("gameSection").style.display="grid";document.getElementById("topupSection").style.display="none";document.getElementById("checkout").style.display="none";}
+
+function showLogin(){document.getElementById("adminLogin").style.display="block";document.getElementById("gameSection").style.display="none";document.getElementById("topupSection").style.display="none";document.getElementById("checkout").style.display="none";document.getElementById("adminPanel").style.display="none";}
+function loginAdmin(){let user=document.getElementById("adminUser").value;let pass=document.getElementById("adminPass").value;if(user==="admin"&&pass==="12345"){isAdmin=true;showAdminPanel();alert("Login berhasil!");}else{alert("Username / Password salah!");}}
+function showAdminPanel(){document.getElementById("adminLogin").style.display="none";document.getElementById("adminPanel").style.display="block";renderEditHarga();}
+function renderEditHarga(){let editArea=document.getElementById("editHarga");editArea.innerHTML="";for(let game in paket){editArea.innerHTML+=`<h3>${game}</h3>`;paket[game].forEach((p,i)=>{editArea.innerHTML+=`<p>${p.diamond}: <input type="number" value="${p.harga}" onchange="updateHarga('${game}',${i},this.value)"> <button class="btn" onclick="hapusPaket('${game}',${i})">Hapus</button></p>`;});}}
+function updateHarga(game,index,newHarga){paket[game][index].harga=parseInt(newHarga);localStorage.setItem('paket',JSON.stringify(paket));renderEditHarga();renderDiamondList(game);showModal("Harga diperbarui!");updateSummary();}
+function hapusPaket(game,index){if(confirm(`Yakin ingin menghapus paket ${paket[game][index].diamond} dari ${game}?`)){paket[game].splice(index,1);localStorage.setItem('paket',JSON.stringify(paket));renderEditHarga();renderDiamondList(game);showModal("Paket dihapus!");updateSummary();}}
+function tambahPaket(){let game=document.getElementById("newGame").value;let diamond=document.getElementById("newDiamond").value.trim();let harga=parseInt(document.getElementById("newHarga").value);if(!diamond||isNaN(harga)||harga<=0){alert("Harap isi nama paket dan harga yang valid.");return;}paket[game].push({diamond,harga});localStorage.setItem('paket',JSON.stringify(paket));renderEditHarga();renderDiamondList(game);document.getElementById("newDiamond").value="";document.getElementById("newHarga").value="";showModal("Paket berhasil ditambahkan!");updateSummary();}
+function resetHarga(){if(confirm("Yakin ingin mengembalikan semua harga ke default?")){paket=JSON.parse(JSON.stringify(paketDefault));localStorage.setItem('paket',JSON.stringify(paket));renderEditHarga();renderDiamondList(selectedGame);showModal("Harga dikembalikan ke default!");updateSummary();}}
+function urutkanPaket(){let game=document.getElementById("sortGame").value;let order=document.getElementById("sortOrder").value;paket[game].sort((a,b)=>order==='asc'?a.harga-b.harga:b.harga-a.harga);localStorage.setItem('paket',JSON.stringify(paket));renderEditHarga();renderDiamondList(game);showModal(`Paket ${game} sudah diurutkan!`);updateSummary();}
+function logoutAdmin(){isAdmin=false;document.getElementById("adminPanel").style.display="none";document.getElementById("gameSection").style.display="grid";}
+
+function showModal(msg){let modal=document.getElementById("modal");modal.innerText=msg;modal.style.display="block";setTimeout(()=>{modal.style.display="none";},1500);}
+</script>
+</body>
+</html>
